@@ -1,0 +1,11 @@
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\futures_channel-43b62f9dacafa7fb.rmeta: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\lock.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\mpsc\mod.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\mpsc\queue.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\oneshot.rs
+
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\libfutures_channel-43b62f9dacafa7fb.rlib: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\lock.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\mpsc\mod.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\mpsc\queue.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\oneshot.rs
+
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\futures_channel-43b62f9dacafa7fb.d: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\lock.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\mpsc\mod.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\mpsc\queue.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\oneshot.rs
+
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\lib.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\lock.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\mpsc\mod.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\mpsc\queue.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\futures-channel-0.3.26\src\oneshot.rs:

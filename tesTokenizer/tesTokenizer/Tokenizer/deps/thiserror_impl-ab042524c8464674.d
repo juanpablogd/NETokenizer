@@ -1,0 +1,12 @@
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\thiserror_impl-ab042524c8464674.dll: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\ast.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\attr.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\expand.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\fmt.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\generics.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\prop.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\valid.rs
+
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\thiserror_impl-ab042524c8464674.d: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\ast.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\attr.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\expand.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\fmt.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\generics.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\prop.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\valid.rs
+
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\lib.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\ast.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\attr.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\expand.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\fmt.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\generics.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\prop.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\thiserror-impl-1.0.38\src\valid.rs:

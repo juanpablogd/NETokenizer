@@ -1,0 +1,12 @@
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\httparse-53adbf416c84fc06.rmeta: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\iter.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\macros.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\mod.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\sse42.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\avx2.rs
+
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\libhttparse-53adbf416c84fc06.rlib: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\iter.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\macros.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\mod.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\sse42.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\avx2.rs
+
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\httparse-53adbf416c84fc06.d: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\iter.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\macros.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\mod.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\sse42.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\avx2.rs
+
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\lib.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\iter.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\macros.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\mod.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\sse42.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\httparse-1.8.0\src\simd\avx2.rs:

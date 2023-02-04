@@ -1,0 +1,12 @@
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\indicatif-74970ef8979f5d72.rmeta: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\format.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\iter.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\progress.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\style.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\utils.rs
+
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\libindicatif-74970ef8979f5d72.rlib: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\format.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\iter.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\progress.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\style.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\utils.rs
+
+C:\JPGD\AI\Rustest\tokenizers-main\tokenizers\target\release\deps\indicatif-74970ef8979f5d72.d: C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\lib.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\format.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\iter.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\progress.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\style.rs C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\utils.rs
+
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\lib.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\format.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\iter.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\progress.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\style.rs:
+C:\Users\JP\.cargo\registry\src\github.com-1ecc6299db9ec823\indicatif-0.15.0\src\utils.rs:
