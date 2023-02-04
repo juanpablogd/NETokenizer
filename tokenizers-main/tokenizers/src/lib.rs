@@ -142,8 +142,13 @@ pub mod pre_tokenizers;
 pub mod processors;
 pub mod tokenizer;
 
+use std::sync::Arc;
+
 // Re-export from tokenizer
 pub use tokenizer::*;
+
+use libc::c_char;
+use std::ffi::CStr;
 
 // Re-export also parallelism utils
 pub use utils::parallelism;
@@ -155,6 +160,43 @@ pub use utils::from_pretrained::FromPretrainedParameters;
 
 #[no_mangle]
 pub extern fn add_numbers(number1: i32, number2: i32) -> i32{
-    println!("Hello JP!");
     return number1 + number2
+}
+
+
+#[no_mangle]
+pub extern fn create_tokenizer() -> Tokenizer {
+    return Tokenizer::from_pretrained("dccuchile/bert-base-spanish-wwm-cased", None).unwrap();
+}
+
+// En Rust
+#[repr(C)]
+pub struct RustStringArray {
+    pub len: usize,
+    pub data: *const *const libc::c_char,
+}
+
+#[no_mangle]
+pub extern fn encode(text: *const c_char) -> RustStringArray {
+
+    let c_str = unsafe {
+        assert!(!text.is_null());
+
+        CStr::from_ptr(text)
+    };
+
+    let r_str = c_str.to_str().unwrap();
+
+
+    let tokenizer = Tokenizer::from_pretrained("dccuchile/bert-base-spanish-wwm-cased", None).unwrap();
+    let encoding = tokenizer.encode(r_str, false).unwrap();
+    println!("{:?}", encoding.get_tokens());
+    let vec = encoding.get_tokens().to_vec();
+
+    let strings: Vec<_> = vec.iter().map(|s| s.as_ptr() as *const _).collect();
+    let array  = RustStringArray {
+        len: vec.len(),
+        data: strings.as_ptr(),
+    };
+    return array;
 }
