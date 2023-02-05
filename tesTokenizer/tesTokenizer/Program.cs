@@ -10,6 +10,10 @@ namespace tesTokenizer
 {
     public class Program
     {
+        //Path DLL
+        //C:\Users\JP\Documents\GitHub\NETokenizer\tokenizers-main\tokenizers\target\debug\tokenizers.dll
+        //E:\github\NETokenizer\tokenizers-main\tokenizers\target\debug/tokenizers.dll
+        const string path_dll = @"E:\github\NETokenizer\tokenizers-main\tokenizers\target\debug/tokenizers.dll";
         [StructLayout(LayoutKind.Sequential)]
         public struct RustStringArray
         {
@@ -18,13 +22,13 @@ namespace tesTokenizer
         }
 
 
-        [DllImport(@"E:\github\NETokenizer\tokenizers-main\tokenizers\target\debug/tokenizers.dll")]
+        [DllImport(path_dll)]
         static extern Int32 add_numbers(Int32 number1, Int32 number2);
 
-        [DllImport(@"E:\github\NETokenizer\tokenizers-main\tokenizers\target\debug/tokenizers.dll")]
+        [DllImport(path_dll)]
         static  extern IntPtr create_tokenizer();
 
-        [DllImport(@"E:\github\NETokenizer\tokenizers-main\tokenizers\target\debug/tokenizers.dll")]
+        [DllImport(path_dll)]
         static extern RustStringArray encode(string text);
         static void Main(string[] args)
         {   //Function Test

@@ -415,3 +415,5 @@ tesTokenizer/tesTokenizer/bin/x64/Debug/tesTokenizer.pdb
 tesTokenizer/tesTokenizer/obj/x64/Debug/tesTokenizer.csproj.AssemblyReference.cache
 tesTokenizer/tesTokenizer/obj/x64/Debug/tesTokenizer.exe
 tesTokenizer/tesTokenizer/obj/x64/Debug/tesTokenizer.pdb
+*.vsidx
+tesTokenizer/.vs/tesTokenizer/v17/.suo
