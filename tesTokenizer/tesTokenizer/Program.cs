@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-using static tesTokenizer.Program;
+using System.Text;
 using System.Web.Script.Serialization;
 
 namespace tesTokenizer
@@ -24,23 +20,14 @@ namespace tesTokenizer
 
         [DllImport(path_dll)]
         static extern Int32 add_numbers(Int32 number1, Int32 number2);
-
         [DllImport(path_dll)]
-        static extern IntPtr create_tokenizer();
+        public static extern IntPtr print_string([MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
 
         [DllImport(path_dll)]
         static extern RustStringArray encode(string text);
 
         [DllImport(path_dll)]
-        static extern string encode_v0(string tokenizer);
-        [DllImport(path_dll, CharSet = CharSet.Ansi, SetLastError = true)]
-        static extern IntPtr encode_v1([MarshalAs(UnmanagedType.LPUTF8Str)] string tokenizer);
-
-        [DllImport(path_dll)]
-        public static extern IntPtr print_string([MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
-
-        [DllImport(path_dll, EntryPoint = "how_many_characters")]
-        public static extern uint HowManyCharacters(string s);
+        public static extern IntPtr encode_v3([MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
 
         private static string PtrToStringUtf8(IntPtr ptr) // aPtr is nul-terminated
         {
@@ -56,39 +43,93 @@ namespace tesTokenizer
             return System.Text.Encoding.UTF8.GetString(array);
         }
 
+        private static string GetUTF8TextFromPointer(IntPtr pointer)
+        {
+            string ansiText = Marshal.PtrToStringAnsi(pointer);
+            byte[] utf8Bytes = Encoding.UTF8.GetBytes(ansiText);
+            return Encoding.UTF8.GetString(utf8Bytes);
+        }
+
+        private static string GetUTF8TextFromPointerV1(IntPtr pointer)
+        {
+            int size = 0;
+            while (Marshal.ReadByte(pointer, size) != 0)
+            {
+                size++;
+            }
+            byte[] buffer = new byte[size];
+            Marshal.Copy(pointer, buffer, 0, size);
+            return Encoding.UTF8.GetString(buffer);
+        }
+
+        public static string PtrToString(IntPtr intPtr)
+        {
+            try
+            {
+                int len = 0;
+                while (Marshal.ReadByte(intPtr, len) != 0) ++len;
+                byte[] buffer = new byte[len];
+                Marshal.Copy(intPtr, buffer, 0, buffer.Length);
+                string result = Encoding.UTF8.GetString(buffer);
+                return result;
+            }
+            catch (AccessViolationException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return string.Empty;
+        }
+        static int mayorIndexOf(string texto)
+        {
+            int mayor = -1;
+            int indice = texto.IndexOf(']');
+            while (indice != -1)
+            {
+                if (indice > mayor)
+                {
+                    mayor = indice;
+                }
+                indice = texto.IndexOf(']', indice + 1);
+            }
+            return mayor;
+        }
+
+        static string stantardJson(string texto)
+        {
+            int inicio = texto.IndexOf('[');
+            int fin = mayorIndexOf(texto);
+            return texto.Substring(inicio, fin - inicio + 1);
+        }
+
         private static string[] StringToArray(string ptext) // aPtr is nul-terminated
         {
+            string[] result = null;
+            if (string.IsNullOrEmpty(ptext)) return result;
             JavaScriptSerializer serializer = new JavaScriptSerializer();
-            string[] result = serializer.Deserialize<string[]>(ptext);
+            result = serializer.Deserialize<string[]>(ptext);
             return result;
         }
 
         static void Main(string[] args)
         {   //Function Test
-            var addedNumbers = add_numbers(10, 5);
-            IntPtr prTxt  = print_string("göes to élevên garzón Dueñas");
-            var data_result = PtrToStringUtf8(prTxt);
-
-            IntPtr ptr_tokens = encode_v1("Probando desde app .Net");
-            var txt = PtrToStringUtf8(ptr_tokens);
-            var ar_tokens = StringToArray(txt);
-            Console.WriteLine(ar_tokens?.Length);
-            Marshal.FreeCoTaskMem((IntPtr)ptr_tokens);
-
-            //var rustStringArray = encode("Probando desde app .Net");
-
-            //IntPtr[] dataPointers = new IntPtr[rustStringArray.len];
-            //Marshal.Copy(rustStringArray.data, dataPointers, 0, (int)rustStringArray.len);
-
-            //string[] data = new string[rustStringArray.len];
-            //for (int i = 0; i < (int)rustStringArray.len; i++)
-            //{
-            //    data[i] = Marshal.PtrToStringAnsi(dataPointers[i]);
-            //}
-
-
+            //var addedNumbers = add_numbers(10, 5);
             //Console.WriteLine(addedNumbers);
+            //IntPtr prTxt = print_string("göes to élevên garzón Dueñas");
+            //var data_result = PtrToStringUtf8(prTxt);
+            test_encoder_v3("garzón  Dueñas");
+            test_encoder_v3("göes to élevên ] garzón Dueñas");
+
             Console.ReadLine();
+        }
+        static void test_encoder_v3(string texto)
+        {
+            IntPtr prTxt2 = encode_v3(texto);
+            var data_result2 = PtrToString(prTxt2); //Console.WriteLine(stantardJson(data_result2));
+            string[] star = StringToArray(stantardJson(data_result2));
+            foreach (var token in star)
+            {
+                Console.WriteLine(token);
+            }
         }
     }
 }
