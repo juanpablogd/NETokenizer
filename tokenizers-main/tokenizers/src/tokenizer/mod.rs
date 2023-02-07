@@ -442,6 +442,7 @@ impl Tokenizer {
         identifier: S,
         params: Option<crate::utils::from_pretrained::FromPretrainedParameters>,
     ) -> Result<Self> {
+        println!("TOKENIZER - FROM PRETRAINDED PARAMETERS");
         let tokenizer_file = crate::utils::from_pretrained::from_pretrained(identifier, params)?;
         Tokenizer::from_file(tokenizer_file)
     }

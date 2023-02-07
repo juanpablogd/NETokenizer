@@ -147,12 +147,19 @@ pub mod tokenizer;
 // Re-export from tokenizer
 pub use tokenizer::*;
 
-use libc::c_char;
-use std::{ffi::{CStr, CString}, env};
-use serde::{Serialize};
+use libc::{c_char};
+use std::{ffi::{CStr}};
+
 
 // Re-export also parallelism utils
 pub use utils::parallelism;
+
+//static gb_tokenizer:Tokenizer = Tokenizer::from_pretrained("dccuchile/bert-base-spanish-wwm-cased", None).unwrap();
+//Tokenizer::from_pretrained("dccuchile/bert-base-spanish-wwm-cased", None)
+
+lazy_static! {
+    static ref GLOBAL_TOKENIZER: Tokenizer = Tokenizer::from_pretrained("dccuchile/bert-base-spanish-wwm-cased", None).unwrap();
+}
 
 // Re-export for from_pretrained
 #[cfg(feature = "http")]
@@ -164,11 +171,14 @@ pub extern fn add_numbers(number1: i32, number2: i32) -> i32{
     return number1 + number2
 }
 
-
 #[no_mangle]
-pub extern fn create_tokenizer() -> Tokenizer {
-    let tokenizer:Tokenizer = Tokenizer::from_pretrained("dccuchile/bert-base-spanish-wwm-cased", None).unwrap();
-    return tokenizer;
+pub extern fn print_string(text_pointer: *mut c_char) -> *mut c_char{
+    unsafe {
+        let text:String = CStr::from_ptr(text_pointer).to_str().expect("Can not read string argument.").trim().to_string();
+        println!("{}", text);
+        let ss:*mut c_char = text.as_ptr() as *mut c_char;
+        return ss;
+    }
 }
 
 // En Rust
@@ -204,62 +214,21 @@ pub extern fn encode(text: *const c_char) -> RustStringArray {
 }
 
 #[no_mangle]
-pub extern fn encode_v0(tokenizer: *const Tokenizer) -> &'static str {
-    /*let tk = unsafe {
-        assert!(!tokenizer.is_null());
-
-        CStr::from_ptr(tokenizer)
-    };
-
-    let encoding:Encoding = &tokenizer.encode("Hey there!", false).unwrap();
-    println!("{:?}", encoding.get_tokens());*/
-    let txt: &str = "sdfasd";
-    return  txt;
-}
-
-#[no_mangle]
-pub extern fn encode_v1(text: *const c_char) ->  *mut c_char {
-    env::set_var("RUST_BACKTRACE", "full");
-    let c_str:&CStr = unsafe {
-        assert!(!text.is_null());
-
-        CStr::from_ptr(text)
-    };
-
-    let r_str: &str = c_str.to_str().unwrap();
-    println!("{:?}", r_str);
-
-    let tokenizer:Tokenizer = Tokenizer::from_pretrained("dccuchile/bert-base-spanish-wwm-cased", None).unwrap();
-    let encoding:Encoding = tokenizer.encode(r_str, false).unwrap();
-    println!("{:?}", encoding.get_tokens());
-    let vec:Vec<String> = encoding.get_tokens().to_vec();
-
-    let strings: Vec<_> = vec.iter().map(|s| s.as_ptr() as *const _).collect();
-    let json:&String = &serde_json::to_string(&vec).unwrap();
-    println!("{:?}", json);
-    let tokens:*mut c_char = json.as_ptr() as *mut c_char;
-    return tokens;
-}
-
-#[no_mangle]
-pub extern fn print_string(text_pointer: *const c_char) -> *mut c_char{
-    unsafe {
-        let text:String = CStr::from_ptr(text_pointer).to_str().expect("Can not read string argument.").trim().to_string();
-        println!("{}", text);
+pub extern fn encode_v3(text_pointer: *const c_char) -> *mut c_char{
+    
+        let mut text:String = unsafe {
+            assert!(!text_pointer.is_null());
+            CStr::from_ptr(text_pointer).to_str().expect("Can not read string argument.").trim().to_string()
+        };
+        //let mut texto = text.clone().to_string();
+        println!("text: {}", text);
+        let tokenizer:Tokenizer = GLOBAL_TOKENIZER.clone();
+        let encoding:Encoding = tokenizer.encode(text, false).unwrap();
+        let vec:Vec<String> = encoding.get_tokens().to_vec();
+        let json:String = serde_json::to_string(&vec).unwrap();
+        text = json.clone().to_string();
+        println!("Json {:?}", text);
         let ss:*mut c_char = text.as_ptr() as *mut c_char;
         return ss;
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn how_many_characters(s: *const c_char) -> u32 {
-    let c_str:&CStr = unsafe {
-        assert!(!s.is_null());
-
-        CStr::from_ptr(s)
-    };
-
-    let r_str: &str = c_str.to_str().unwrap();
-    println!("{}", r_str.to_string());
-    r_str.chars().count() as u32
+    
 }
