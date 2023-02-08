@@ -144,6 +144,7 @@ pub mod tokenizer;
 
 //use std::sync::Arc;
 
+use serde::Serialize;
 // Re-export from tokenizer
 pub use tokenizer::*;
 
@@ -193,6 +194,13 @@ pub extern fn print_string(text_pointer: *mut c_char) -> *mut c_char{
 pub struct RustStringArray {
     pub len: usize,
     pub data: *const *const libc::c_char,
+}
+
+#[repr(C)]
+#[derive(Serialize)]
+pub struct RustArray {
+    pub tokens: Vec<String>,
+    pub ids: Vec<u32>,
 }
 
 #[no_mangle]
@@ -256,7 +264,38 @@ pub extern fn encode_v4(tokenizerptr : *mut Tokenizer, text_pointer: *const c_ch
         let encoding:Encoding = tokenizer.encode(text, false).unwrap();
 
         let vec:Vec<String> = encoding.get_tokens().to_vec();
+        
         let json:String = serde_json::to_string(&vec).unwrap();
+        text = json.clone().to_string();
+        println!("RUST Json {:?}", text);
+        let ss:*mut c_char = text.as_ptr() as *mut c_char;
+        return ss;
+    
+}
+
+#[no_mangle]
+pub extern fn encode_v5(tokenizerptr : *mut Tokenizer, text_pointer: *const c_char) -> *mut c_char{
+    
+        let mut text:String = unsafe {
+            assert!(!text_pointer.is_null());
+            CStr::from_ptr(text_pointer).to_str().expect("Can not read string argument.").trim().to_string()
+        };
+        println!("text: {}", text);
+        
+        //Clone the pointer
+        let new_tokenizer: *mut Tokenizer = tokenizerptr.clone();
+        let tokenizer: &Tokenizer = unsafe { &*new_tokenizer};
+
+        let encoding:Encoding = tokenizer.encode(text, false).unwrap();
+
+        let vec_tokens:Vec<String> = encoding.get_tokens().to_vec();
+        let vec_ids:Vec<u32> = encoding.get_ids().to_vec();
+        let struct_tokens:RustArray = RustArray{
+            tokens:vec_tokens,
+            ids:vec_ids,
+        };
+        
+        let json = serde_json::to_string(&struct_tokens).unwrap();
         text = json.clone().to_string();
         println!("RUST Json {:?}", text);
         let ss:*mut c_char = text.as_ptr() as *mut c_char;
