@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace tesTokenizer
 {
@@ -11,12 +13,18 @@ namespace tesTokenizer
         //Path DLL
         //C:\Users\JP\Documents\GitHub\NETokenizer\tokenizers-main\tokenizers\target\debug\tokenizers.dll
         //E:\github\NETokenizer\tokenizers-main\tokenizers\target\debug/tokenizers.dll
-        const string path_dll = @"C:\Users\JP\Documents\GitHub\NETokenizer\tokenizers-main\tokenizers\target\debug\tokenizers.dll";
+        const string path_dll = @"C:\Users\JP\Documents\GitHub\NETokenizer\ext\tokenizers\target\debug\tokenizers.dll";
         [StructLayout(LayoutKind.Sequential)]
         public struct RustStringArray
         {
             public UInt64 len;
             public IntPtr data;
+        }
+
+        public class DataEncoding
+        {
+            public string[] tokens { get; set; }
+            public int[] ids { get; set; }
         }
 
         [DllImport(path_dll)]
@@ -33,6 +41,9 @@ namespace tesTokenizer
 
         [DllImport(path_dll)]
         public static extern IntPtr encode_v4(IntPtr tokenizer, [MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
+        
+        [DllImport(path_dll)]
+        public static extern IntPtr encode_v5(IntPtr tokenizer, [MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
 
         private static string PtrToStringUtf8(IntPtr ptr) // aPtr is nul-terminated
         {
@@ -84,11 +95,27 @@ namespace tesTokenizer
             }
             return string.Empty;
         }
+
         public static string stantardJson(string input)
         {
-            Regex regex = new Regex(@"(\[.*\])", RegexOptions.Compiled);
+            Regex regex = new Regex(@"(\{.*\]\})", RegexOptions.Compiled);
             Match txt_match =  regex.Match(input);
             return txt_match.Value;
+        }
+        public static DataEncoding encoding_format(string input)
+        {
+            DataEncoding data = null;
+            Regex regex = new Regex(@"(\{.*\]\})", RegexOptions.Compiled);
+            Match txt_match =  regex.Match(input);
+            try
+            {
+                data = JsonConvert.DeserializeObject<DataEncoding>(txt_match.Value);
+            }
+            catch (JsonReaderException jex)
+            {
+                Console.WriteLine(jex.Message);
+            }
+            return data;
         }
 
         private static string[] StringToArray(string ptext) // aPtr is nul-terminated
@@ -107,14 +134,48 @@ namespace tesTokenizer
             //IntPtr prTxt = print_string("göes to élevên garzón Dueñas");
             //var data_result = PtrToStringUtf8(prTxt);
             var tokenizerPtr = create_tokenizer();
-            test_encoder_v4(tokenizerPtr, "göes to élevên");
+
+            /*test_encoder_v4(tokenizerPtr, "göes to élevên");
             test_encoder_v4(tokenizerPtr, "Carlos FonsecA");
-            test_encoder_v4(tokenizerPtr, "garzón Dueñas");
+            test_encoder_v4(tokenizerPtr, "garzón Dueñas");*/
+
+            test_encoder_v5(tokenizerPtr, "göes to élevên");
+            test_encoder_v5(tokenizerPtr, "Carlos FonsecA");
+            test_encoder_v5(tokenizerPtr, "garzón Dueñas");
 
             //test_encoder_v3("garzón  Dueñas");
             //test_encoder_v3("göes to élevên ] garzón Dueñas");
 
-            Console.ReadLine();
+            //Console.ReadLine();
+        }
+
+        static void test_encoder_v5(IntPtr tokenizerPtr, string texto)
+        {
+            //Console.WriteLine(stantardJson(data_result2));
+            int iteration = 0;
+            DataEncoding daten = null;
+            while (iteration < 5)
+            {
+                IntPtr prTxt2 = encode_v5(tokenizerPtr, texto);
+                var data_result2 = PtrToString(prTxt2);
+                Console.WriteLine($@"NET {data_result2}");
+                daten = encoding_format(data_result2);
+                if (daten == null)
+                {
+                    iteration++;
+                    Console.WriteLine($@"ITERATION {iteration}");
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            
+            for(int t = 0; t < daten.ids.Length;t++)
+            {
+                Console.WriteLine($@"{daten.tokens[t]} - {daten.ids[t]}" );
+            }
         }
 
         static void test_encoder_v4(IntPtr tokenizerPtr, string texto)
