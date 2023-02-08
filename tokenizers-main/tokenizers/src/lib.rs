@@ -251,8 +251,9 @@ pub extern fn encode_v4(tokenizerptr : *mut Tokenizer, text_pointer: *const c_ch
         println!("text: {}", text);
 
         let tokenizer = unsafe { Box::from_raw(tokenizerptr) };
+        let new_tokenizer:Tokenizer = *tokenizer.clone();
 
-        let encoding:Encoding = tokenizer.encode(text, false).unwrap();
+        let encoding:Encoding = new_tokenizer.encode(text, false).unwrap();
         let vec:Vec<String> = encoding.get_tokens().to_vec();
         let json:String = serde_json::to_string(&vec).unwrap();
         text = json.clone().to_string();
