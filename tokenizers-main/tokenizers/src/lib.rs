@@ -247,17 +247,18 @@ pub extern fn encode_v4(tokenizerptr : *mut Tokenizer, text_pointer: *const c_ch
             assert!(!text_pointer.is_null());
             CStr::from_ptr(text_pointer).to_str().expect("Can not read string argument.").trim().to_string()
         };
-        //let mut texto = text.clone().to_string();
         println!("text: {}", text);
+        
+        //Clone the pointer
+        let new_tokenizer: *mut Tokenizer = tokenizerptr.clone();
+        let tokenizer: &Tokenizer = unsafe { &*new_tokenizer};
 
-        let tokenizer = unsafe { Box::from_raw(tokenizerptr) };
-        let new_tokenizer:Tokenizer = *tokenizer.clone();
-
-        let encoding:Encoding = new_tokenizer.encode(text, false).unwrap();
+        let encoding:Encoding = tokenizer.encode(text, false).unwrap();
+        //let encoding:Encoding = tokenizer.encode(text, false).unwrap();
         let vec:Vec<String> = encoding.get_tokens().to_vec();
         let json:String = serde_json::to_string(&vec).unwrap();
         text = json.clone().to_string();
-        println!("Json {:?}", text);
+        println!("RUST Json {:?}", text);
         let ss:*mut c_char = text.as_ptr() as *mut c_char;
         return ss;
     
