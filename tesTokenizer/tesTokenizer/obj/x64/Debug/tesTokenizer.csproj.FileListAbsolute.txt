@@ -7,7 +7,6 @@ C:\Users\JP\Documents\tesTokenizer\tesTokenizer\obj\x64\Debug\tesTokenizer.cspro
 C:\Users\JP\Documents\tesTokenizer\tesTokenizer\obj\x64\Debug\tesTokenizer.exe
 C:\Users\JP\Documents\tesTokenizer\tesTokenizer\obj\x64\Debug\tesTokenizer.pdb
 C:\Users\JP\Documents\tesTokenizer\tesTokenizer\bin\x64\Debug\tokenizers.dll
-C:\Users\JP\Documents\GitHub\NETokenizer\tesTokenizer\tesTokenizer\bin\x64\Debug\tokenizers.dll
 C:\Users\JP\Documents\GitHub\NETokenizer\tesTokenizer\tesTokenizer\bin\x64\Debug\tesTokenizer.exe.config
 C:\Users\JP\Documents\GitHub\NETokenizer\tesTokenizer\tesTokenizer\bin\x64\Debug\tesTokenizer.exe
 C:\Users\JP\Documents\GitHub\NETokenizer\tesTokenizer\tesTokenizer\bin\x64\Debug\tesTokenizer.pdb
