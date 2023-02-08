@@ -165,6 +165,13 @@ lazy_static! {
 #[cfg(feature = "http")]
 pub use utils::from_pretrained::FromPretrainedParameters;
 
+#[no_mangle]
+pub extern fn create_tokenizer() -> *mut Tokenizer {
+    let tokenizer:Tokenizer = Tokenizer::from_pretrained("dccuchile/bert-base-spanish-wwm-cased", None).unwrap();
+    let x = Box::new(tokenizer);
+    let p = Box::into_raw(x);
+    return p;
+}
 
 #[no_mangle]
 pub extern fn add_numbers(number1: i32, number2: i32) -> i32{
@@ -223,6 +230,28 @@ pub extern fn encode_v3(text_pointer: *const c_char) -> *mut c_char{
         //let mut texto = text.clone().to_string();
         println!("text: {}", text);
         let tokenizer:Tokenizer = GLOBAL_TOKENIZER.clone();
+        let encoding:Encoding = tokenizer.encode(text, false).unwrap();
+        let vec:Vec<String> = encoding.get_tokens().to_vec();
+        let json:String = serde_json::to_string(&vec).unwrap();
+        text = json.clone().to_string();
+        println!("Json {:?}", text);
+        let ss:*mut c_char = text.as_ptr() as *mut c_char;
+        return ss;
+    
+}
+
+#[no_mangle]
+pub extern fn encode_v4(tokenizerptr : *mut Tokenizer, text_pointer: *const c_char) -> *mut c_char{
+    
+        let mut text:String = unsafe {
+            assert!(!text_pointer.is_null());
+            CStr::from_ptr(text_pointer).to_str().expect("Can not read string argument.").trim().to_string()
+        };
+        //let mut texto = text.clone().to_string();
+        println!("text: {}", text);
+
+        let tokenizer = unsafe { Box::from_raw(tokenizerptr) };
+
         let encoding:Encoding = tokenizer.encode(text, false).unwrap();
         let vec:Vec<String> = encoding.get_tokens().to_vec();
         let json:String = serde_json::to_string(&vec).unwrap();

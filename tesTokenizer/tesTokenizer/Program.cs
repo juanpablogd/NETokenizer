@@ -19,7 +19,8 @@ namespace tesTokenizer
         }
 
         [DllImport(path_dll)]
-        static extern Int32 add_numbers(Int32 number1, Int32 number2);
+        static extern IntPtr create_tokenizer();
+
         [DllImport(path_dll)]
         public static extern IntPtr print_string([MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
 
@@ -28,6 +29,9 @@ namespace tesTokenizer
 
         [DllImport(path_dll)]
         public static extern IntPtr encode_v3([MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
+
+        [DllImport(path_dll)]
+        public static extern IntPtr encode_v4(IntPtr tokenizer, [MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
 
         private static string PtrToStringUtf8(IntPtr ptr) // aPtr is nul-terminated
         {
@@ -116,11 +120,26 @@ namespace tesTokenizer
             //Console.WriteLine(addedNumbers);
             //IntPtr prTxt = print_string("göes to élevên garzón Dueñas");
             //var data_result = PtrToStringUtf8(prTxt);
+            var tokenizerPtr = create_tokenizer();
+            test_encoder_v4(tokenizerPtr,"carlos  fonseca");
+
             test_encoder_v3("garzón  Dueñas");
             test_encoder_v3("göes to élevên ] garzón Dueñas");
 
             Console.ReadLine();
         }
+
+        static void test_encoder_v4(IntPtr tokenizerPtr, string texto)
+        {
+            IntPtr prTxt2 = encode_v4(tokenizerPtr, texto);
+            var data_result2 = PtrToString(prTxt2); //Console.WriteLine(stantardJson(data_result2));
+            string[] star = StringToArray(stantardJson(data_result2));
+            foreach (var token in star)
+            {
+                Console.WriteLine(token);
+            }
+        }
+
         static void test_encoder_v3(string texto)
         {
             IntPtr prTxt2 = encode_v3(texto);
