@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
 
 namespace tesTokenizer
@@ -83,26 +84,11 @@ namespace tesTokenizer
             }
             return string.Empty;
         }
-        static int mayorIndexOf(string texto)
+        public static string stantardJson(string input)
         {
-            int mayor = -1;
-            int indice = texto.IndexOf(']');
-            while (indice != -1)
-            {
-                if (indice > mayor)
-                {
-                    mayor = indice;
-                }
-                indice = texto.IndexOf(']', indice + 1);
-            }
-            return mayor;
-        }
-
-        static string stantardJson(string texto)
-        {
-            int inicio = texto.IndexOf('[');
-            int fin = mayorIndexOf(texto);
-            return texto.Substring(inicio, fin - inicio + 1);
+            Regex regex = new Regex(@"(\[.*\])", RegexOptions.Compiled);
+            Match txt_match =  regex.Match(input);
+            return txt_match.Value;
         }
 
         private static string[] StringToArray(string ptext) // aPtr is nul-terminated
@@ -121,10 +107,12 @@ namespace tesTokenizer
             //IntPtr prTxt = print_string("göes to élevên garzón Dueñas");
             //var data_result = PtrToStringUtf8(prTxt);
             var tokenizerPtr = create_tokenizer();
-            test_encoder_v4(tokenizerPtr,"carlos  fonseca");
+            test_encoder_v4(tokenizerPtr, "göes to élevên");
+            test_encoder_v4(tokenizerPtr, "Carlos FonsecA");
+            test_encoder_v4(tokenizerPtr, "garzón Dueñas");
 
-            test_encoder_v3("garzón  Dueñas");
-            test_encoder_v3("göes to élevên ] garzón Dueñas");
+            //test_encoder_v3("garzón  Dueñas");
+            //test_encoder_v3("göes to élevên ] garzón Dueñas");
 
             Console.ReadLine();
         }
@@ -132,12 +120,14 @@ namespace tesTokenizer
         static void test_encoder_v4(IntPtr tokenizerPtr, string texto)
         {
             IntPtr prTxt2 = encode_v4(tokenizerPtr, texto);
-            var data_result2 = PtrToString(prTxt2); //Console.WriteLine(stantardJson(data_result2));
-            string[] star = StringToArray(stantardJson(data_result2));
-            foreach (var token in star)
-            {
-                Console.WriteLine(token);
-            }
+            var data_result2 = PtrToString(prTxt2);
+            //Console.WriteLine(data_result2);
+            Console.WriteLine(stantardJson(data_result2));
+            //string[] star = StringToArray(stantardJson(data_result2));
+            //foreach (var token in star)
+            //{
+            //    Console.WriteLine(token);
+            //}
         }
 
         static void test_encoder_v3(string texto)
