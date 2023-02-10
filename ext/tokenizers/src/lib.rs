@@ -149,7 +149,7 @@ use serde::Serialize;
 pub use tokenizer::*;
 
 use libc::c_char;
-use std::ffi::CStr;
+use std::{ffi::CStr, path::Path};
 
 // Re-export also parallelism utils
 pub use utils::parallelism;
@@ -177,6 +177,24 @@ pub extern "C" fn create_tokenizer(tokenizer_path: *const c_char) -> *mut Tokeni
             .to_string()
     };
     let tokenizer: Tokenizer = Tokenizer::from_pretrained(tokenizer_name, None).unwrap();
+    let x = Box::new(tokenizer);
+    let p = Box::into_raw(x);
+    return p;
+}
+
+#[no_mangle]
+pub extern "C" fn create_tokenizer_local(tokenizer_path: *const c_char) -> *mut Tokenizer {
+    let tokenizer_name: String = unsafe {
+        assert!(!tokenizer_path.is_null());
+        CStr::from_ptr(tokenizer_path)
+            .to_str()
+            .expect("Can not read string argument.")
+            .trim()
+            .to_string()
+    };
+    let root = Path::new(&tokenizer_name);
+    let tokenizer: Tokenizer = Tokenizer::from_file(root).unwrap();
+
     let x = Box::new(tokenizer);
     let p = Box::into_raw(x);
     return p;
