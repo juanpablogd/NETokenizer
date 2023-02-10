@@ -28,7 +28,7 @@ namespace tesTokenizer
         }
 
         [DllImport(path_dll)]
-        static extern IntPtr create_tokenizer();
+        static extern IntPtr create_tokenizer(string tokenizer_path);
 
         [DllImport(path_dll)]
         public static extern IntPtr print_string([MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
@@ -133,20 +133,24 @@ namespace tesTokenizer
             //Console.WriteLine(addedNumbers);
             //IntPtr prTxt = print_string("göes to élevên garzón Dueñas");
             //var data_result = PtrToStringUtf8(prTxt);
-            var tokenizerPtr = create_tokenizer();
+            var tokenizerPtr = create_tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
 
             /*test_encoder_v4(tokenizerPtr, "göes to élevên");
             test_encoder_v4(tokenizerPtr, "Carlos FonsecA");
             test_encoder_v4(tokenizerPtr, "garzón Dueñas");*/
 
-            test_encoder_v5(tokenizerPtr, "göes to élevên");
-            test_encoder_v5(tokenizerPtr, "Carlos FonsecA");
-            test_encoder_v5(tokenizerPtr, "garzón Dueñas");
+            for (int i = 0; i < 1000; i++)
+            {
+                test_encoder_v5(tokenizerPtr, "Carlos Fonseca");
+            }
+
+            //test_encoder_v5(tokenizerPtr, "göes to élevên");
+            //test_encoder_v5(tokenizerPtr, "garzón Dueñas");
 
             //test_encoder_v3("garzón  Dueñas");
             //test_encoder_v3("göes to élevên ] garzón Dueñas");
 
-            //Console.ReadLine();
+            Console.ReadLine();
         }
 
         static void test_encoder_v5(IntPtr tokenizerPtr, string texto)
