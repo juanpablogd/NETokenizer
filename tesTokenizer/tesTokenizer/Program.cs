@@ -29,6 +29,8 @@ namespace tesTokenizer
 
         [DllImport(path_dll)]
         static extern IntPtr create_tokenizer(string tokenizer_path);
+        [DllImport(path_dll)]
+        static extern IntPtr create_tokenizer_local(string tokenizer_path);
 
         [DllImport(path_dll)]
         public static extern IntPtr print_string([MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
@@ -133,7 +135,9 @@ namespace tesTokenizer
             //Console.WriteLine(addedNumbers);
             //IntPtr prTxt = print_string("göes to élevên garzón Dueñas");
             //var data_result = PtrToStringUtf8(prTxt);
-            var tokenizerPtr = create_tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
+            
+            //var tokenizerPtr = create_tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
+            var tokenizerPtr = create_tokenizer_local(@"pre_trained\bert-base-spanish-wwm-cased\tokenizer.json");
 
             /*test_encoder_v4(tokenizerPtr, "göes to élevên");
             test_encoder_v4(tokenizerPtr, "Carlos FonsecA");
