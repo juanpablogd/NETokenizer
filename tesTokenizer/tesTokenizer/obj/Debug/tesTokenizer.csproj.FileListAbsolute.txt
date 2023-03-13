@@ -1,9 +1,0 @@
-C:\Users\JP\Documents\tesTokenizer\tesTokenizer\bin\Debug\tesTokenizer.exe.config
-C:\Users\JP\Documents\tesTokenizer\tesTokenizer\bin\Debug\tesTokenizer.exe
-C:\Users\JP\Documents\tesTokenizer\tesTokenizer\bin\Debug\tesTokenizer.pdb
-C:\Users\JP\Documents\tesTokenizer\tesTokenizer\obj\Debug\tesTokenizer.csproj.AssemblyReference.cache
-C:\Users\JP\Documents\tesTokenizer\tesTokenizer\obj\Debug\tesTokenizer.csproj.SuggestedBindingRedirects.cache
-C:\Users\JP\Documents\tesTokenizer\tesTokenizer\obj\Debug\tesTokenizer.csproj.CoreCompileInputs.cache
-C:\Users\JP\Documents\tesTokenizer\tesTokenizer\obj\Debug\tesTokenizer.exe
-C:\Users\JP\Documents\tesTokenizer\tesTokenizer\obj\Debug\tesTokenizer.pdb
-C:\Users\JP\Documents\tesTokenizer\tesTokenizer\bin\Debug\tokenizers.dll
