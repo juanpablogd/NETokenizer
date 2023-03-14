@@ -65,5 +65,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NeTokenizer\NeTokenizer.csproj">
+      <Project>{db2e6f4d-e0e2-4a37-979d-ca81308d8dd5}</Project>
+      <Name>NeTokenizer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
