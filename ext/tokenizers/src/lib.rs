@@ -149,7 +149,8 @@ use serde::Serialize;
 pub use tokenizer::*;
 
 use libc::c_char;
-use std::ffi::CStr;
+use core::slice;
+use std::ffi::{CStr, CString};
 
 // Re-export also parallelism utils
 pub use utils::parallelism;
@@ -207,7 +208,6 @@ pub struct RustStringArray {
     pub len: usize,
     pub data: *const *const libc::c_char,
 }
-
 
 #[derive(Serialize)]
 #[repr(C)]
@@ -292,6 +292,29 @@ pub extern "C" fn encode_v4(
     println!("RUST Json {:?}", text);
     let ss: *mut c_char = text.as_ptr() as *mut c_char;
     return ss;
+}
+
+#[no_mangle]
+pub extern "C" fn decode(len: usize, ids: *const i64, tokenizerptr: *mut Tokenizer) {
+    
+    let longs = unsafe {
+        assert!(!ids.is_null());
+        slice::from_raw_parts(ids, len)
+    };
+    
+    let u32_vec: Vec<u32> = longs.iter().map(|&x| x as u32).collect();
+
+
+    let new_tokenizer: *mut Tokenizer = tokenizerptr.clone();
+    let tokenizer: &Tokenizer = unsafe { &*new_tokenizer };
+
+    let decoded = tokenizer.decode(u32_vec, true).unwrap();
+    
+    let cstring = CString::new(decoded).unwrap();
+
+    // Retorna un puntero a la cadena C
+    return Box::into_raw(cstring.into_inner()) as *mut c_char;
+    //println!("decoded: {:?}", decoded);
 }
 
 #[no_mangle]

@@ -10,41 +10,6 @@ namespace tesTokenizer
 {
     public class Program
     {
-        //Path DLL
-        //C:\Users\JP\Documents\GitHub\NETokenizer\tokenizers-main\tokenizers\target\debug\tokenizers.dll
-        //E:\github\NETokenizer\tokenizers-main\tokenizers\target\debug/tokenizers.dll
-        const string path_dll = @"C:\Users\JP\Documents\GitHub\NETokenizer\ext\tokenizers\target\debug\tokenizers.dll";
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RustStringArray
-        {
-            public UInt64 len;
-            public IntPtr data;
-        }
-
-        public class DataEncoding
-        {
-            public string[] tokens { get; set; }
-            public int[] ids { get; set; }
-        }
-
-        [DllImport(path_dll)]
-        static extern IntPtr create_tokenizer(string tokenizer_path);
-
-        [DllImport(path_dll)]
-        public static extern IntPtr print_string([MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
-
-        [DllImport(path_dll)]
-        static extern RustStringArray encode(string text);
-
-        [DllImport(path_dll)]
-        public static extern IntPtr encode_v3([MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
-
-        [DllImport(path_dll)]
-        public static extern IntPtr encode_v4(IntPtr tokenizer, [MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
-        
-        [DllImport(path_dll)]
-        public static extern IntPtr encode_v5(IntPtr tokenizer, [MarshalAs(UnmanagedType.LPUTF8Str)] string utf8Text);
-
         private static string PtrToStringUtf8(IntPtr ptr) // aPtr is nul-terminated
         {
             if (ptr == IntPtr.Zero)
@@ -133,6 +98,8 @@ namespace tesTokenizer
             //Console.WriteLine(addedNumbers);
             //IntPtr prTxt = print_string("göes to élevên garzón Dueñas");
             //var data_result = PtrToStringUtf8(prTxt);
+
+            
             var tokenizerPtr = create_tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
 
             /*test_encoder_v4(tokenizerPtr, "göes to élevên");
