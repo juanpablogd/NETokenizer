@@ -101,6 +101,9 @@ namespace tesTokenizer
 
             
             var tokenizerPtr = create_tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
+            
+            //var tokenizerPtr = create_tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
+            var tokenizerPtr = create_tokenizer_local(@"pre_trained\bert-base-spanish-wwm-cased\tokenizer.json");
 
             /*test_encoder_v4(tokenizerPtr, "göes to élevên");
             test_encoder_v4(tokenizerPtr, "Carlos FonsecA");
