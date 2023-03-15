@@ -142,16 +142,13 @@ pub mod pre_tokenizers;
 pub mod processors;
 pub mod tokenizer;
 
-//use std::sync::Arc;
-
-use serde::Serialize;
 // Re-export from tokenizer
 pub use tokenizer::*;
 
-use libc::c_char;
 use core::slice;
-use std::{ffi::CStr, path::Path};
+use libc::c_char;
 use std::ffi::CString;
+use std::{ffi::CStr, path::Path};
 
 // Re-export also parallelism utils
 pub use utils::parallelism;
@@ -208,77 +205,24 @@ pub extern "C" fn print_string(text_pointer: *mut c_char) -> *mut c_char {
     }
 }
 
-// En Rust
-#[repr(C)]
-pub struct RustStringArray {
-    pub len: usize,
-    pub data: *const *const libc::c_char,
-}
-
-#[derive(Serialize)]
-#[repr(C)]
-pub struct RustArray {
-    pub tokens: Vec<String>,
-    pub ids: Vec<u32>,
-    pub mask: Vec<u32>,
-}
-
 #[no_mangle]
-pub extern "C" fn decode(len: usize, ids: *const i64, tokenizerptr: *mut Tokenizer)-> *mut c_char {
-    
+pub extern "C" fn decode(len: usize, ids: *const i64, tokenizerptr: *mut Tokenizer) -> *mut c_char {
     let longs = unsafe {
         assert!(!ids.is_null());
         slice::from_raw_parts(ids, len)
     };
-    
+
     let u32_vec: Vec<u32> = longs.iter().map(|&x| x as u32).collect();
     let new_tokenizer: *mut Tokenizer = tokenizerptr.clone();
     let tokenizer: &Tokenizer = unsafe { &*new_tokenizer };
 
     let decoded = tokenizer.decode(u32_vec, true).unwrap();
-    
+
     let cstring = CString::new(decoded).unwrap();
 
     // Retorna un puntero a la cadena C
     return cstring.into_raw();
     //println!("decoded: {:?}", decoded);
-}
-
-#[no_mangle]
-pub extern "C" fn encode(
-    tokenizerptr: *mut Tokenizer,
-    text_pointer: *const c_char,
-) -> *mut c_char {
-    let mut text: String = unsafe {
-        assert!(!text_pointer.is_null());
-        CStr::from_ptr(text_pointer)
-            .to_str()
-            .expect("Can not read string argument.")
-            .trim()
-            .to_string()
-    };
-    println!("text: {}", text);
-
-    //Clone the pointer
-    let new_tokenizer: *mut Tokenizer = tokenizerptr.clone();
-    let tokenizer: &Tokenizer = unsafe { &*new_tokenizer };
-
-    let encoding: Encoding = tokenizer.encode(text, false).unwrap();
-
-    let vec_tokens: Vec<String> = encoding.get_tokens().to_vec();
-    let vec_ids: Vec<u32> = encoding.get_ids().to_vec();
-    let mask: Vec<u32> = encoding.get_attention_mask().to_vec();
-    let struct_tokens: RustArray = RustArray {
-        tokens: vec_tokens,
-        ids: vec_ids,
-        mask: mask,
-    };
-
-    let json = serde_json::to_string(&struct_tokens).unwrap();
-    text = json.clone().to_string();
-    println!("RUST Json {:?}", text);
-    let ss: *mut c_char = text.as_ptr() as *mut c_char;
-    return ss;
 }
 
 #[repr(C)]
@@ -289,7 +233,7 @@ pub struct CSharpArray {
 }
 
 #[no_mangle]
-pub extern "C" fn encode_struct(
+pub extern "C" fn encode(
     tokenizerptr: *mut Tokenizer,
     text_pointer: *const c_char,
 ) -> *mut CSharpArray {
@@ -317,22 +261,32 @@ pub extern "C" fn encode_struct(
     let joined_tokens = vec_tokens.join(" ");
     let cstring_tokens = CString::new(joined_tokens).unwrap();
     let tokens_raw = cstring_tokens.into_raw();
-    
+
     // joint vec_ids into single string split by space character
-    let joined_ids = vec_ids.iter().map(|i| i.to_string()).collect::<Vec<String>>().join(" ");
+    let joined_ids = vec_ids
+        .iter()
+        .map(|i| i.to_string())
+        .collect::<Vec<String>>()
+        .join(" ");
     let cstring_ids = CString::new(joined_ids).unwrap();
     let ids_raw = cstring_ids.into_raw();
 
     // joint mask into single string split by space character
-    let joined_mask = mask.iter().map(|i| i.to_string()).collect::<Vec<String>>().join(" ");
+    let joined_mask = mask
+        .iter()
+        .map(|i| i.to_string())
+        .collect::<Vec<String>>()
+        .join(" ");
     let cstring_mask = CString::new(joined_mask).unwrap();
     let mask_raw = cstring_mask.into_raw();
-    
+
     let csharp_array = CSharpArray {
         tokens: tokens_raw,
         ids: ids_raw,
         mask: mask_raw,
     };
 
-    Box::into_raw(Box::new(csharp_array))
+    let box_result = Box::new(csharp_array);
+    return Box::into_raw(box_result);
+    //return csharp_array as pointer
 }

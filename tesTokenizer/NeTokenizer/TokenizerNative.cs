@@ -4,7 +4,7 @@ using System;
 namespace NeTokenizer
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct RustArray
+    public struct CSharpArray
     {
         public IntPtr tokens;
         public IntPtr ids;

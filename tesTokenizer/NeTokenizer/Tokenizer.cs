@@ -32,59 +32,14 @@ namespace NeTokenizer
 
         public string EncodeStruct(string text)
         {
-            var structNative = TokenizerNative.encode_struct(_tokenizerPtr, text);
-            RustArray rustArray = Marshal.PtrToStructure<RustArray>(structNative);
+            var structNative = TokenizerNative.encode(_tokenizerPtr, text);
+            CSharpArray rustArray = Marshal.PtrToStructure<CSharpArray>(structNative);
 
-            string tokens = PtrToString(rustArray.tokens);
-
-
+            var tokens = PtrToString(rustArray.tokens).Split(' ');
+            var ids = PtrToString(rustArray.ids).Split(' ');
+            var mas = PtrToString(rustArray.mask).Split(' ');
 
             return string.Empty;
-        }
-
-        public DataEncoding Encode(string text)
-        {
-            int iteration = 0;
-            DataEncoding daten = null;
-            while (iteration < 5)
-            {
-                IntPtr prTxt2 = TokenizerNative.encode(_tokenizerPtr, text);
-                var data_result2 = PtrToString(prTxt2);
-                Console.WriteLine($@"NET {data_result2}");
-                daten = encoding_format(data_result2);
-                if (daten == null)
-                {
-                    iteration++;
-                    Console.WriteLine($@"ITERATION {iteration}");
-                    continue;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            for (int t = 0; t < daten.ids.Length; t++)
-            {
-                Console.WriteLine($@"{daten.tokens[t]} - {daten.ids[t]}");
-            }
-            return daten;
-        }
-
-        public static DataEncoding encoding_format(string input)
-        {
-            DataEncoding data = null;
-            Regex regex = new Regex(@"(\{.*\]\})", RegexOptions.Compiled);
-            Match txt_match = regex.Match(input);
-            try
-            {
-                data = JsonConvert.DeserializeObject<DataEncoding>(txt_match.Value);
-            }
-            catch (JsonReaderException jex)
-            {
-                Console.WriteLine(jex.Message);
-            }
-            return data;
         }
 
         public static string PtrToString(IntPtr intPtr)
