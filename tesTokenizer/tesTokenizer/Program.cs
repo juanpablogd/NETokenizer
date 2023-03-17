@@ -63,10 +63,16 @@ namespace tesTokenizer
         {
             // create tokenizer
             var tokenizer = new Tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
-            //var encoded = tokenizer.Encode("prueba texto encode");
-            var encodeStruct = tokenizer.EncodeStruct("prueba texto encode");
-  
-            //var tokenizerPtr = create_tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
+            
+            // measure time taken by encode
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var encodeStruct = tokenizer.Encode("programo utilizando ia.", includeSpecialTokens: true, padToMax: 15);
+
+            watch.Stop();
+
+            // print elapsed time
+            Console.WriteLine($"Ellapsed ms: {watch.ElapsedMilliseconds}");
 
             //var tokenizerPtr = create_tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
             // var tokenizerPtr = create_tokenizer_local(@"pre_trained\bert-base-spanish-wwm-cased\tokenizer.json");

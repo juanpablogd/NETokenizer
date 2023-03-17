@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -30,16 +31,51 @@ namespace NeTokenizer
             return _tokenizerPtr;
         }
 
-        public string EncodeStruct(string text)
+        public Encoded Encode(string text,bool includeSpecialTokens = false, int padToMax = -1)
         {
-            var structNative = TokenizerNative.encode(_tokenizerPtr, text);
-            CSharpArray rustArray = Marshal.PtrToStructure<CSharpArray>(structNative);
+            var wordIds = new List<int>();
+            var nativeStructPtr = TokenizerNative.encode(_tokenizerPtr, text, includeSpecialTokens, padToMax);
+            CSharpArray rustArray = Marshal.PtrToStructure<CSharpArray>(nativeStructPtr);
 
             var tokens = PtrToString(rustArray.tokens).Split(' ');
             var ids = PtrToString(rustArray.ids).Split(' ');
-            var mas = PtrToString(rustArray.mask).Split(' ');
+            var mask = PtrToString(rustArray.mask).Split(' ');
 
-            return string.Empty;
+            int wordIndex = -1;
+
+            // loop tokens with for loop and check if it starts with ##, if it does, then it is a subword
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                if (tokens[i].StartsWith("##"))
+                {
+                    // add subword to the previous word
+                    wordIds.Add(wordIndex);
+                }
+                else if (tokens[i].StartsWith("[") && tokens[i].EndsWith("]"))
+                {
+                    // -100 as None
+                    wordIds.Add(-100);
+                }
+                else
+                {
+                    wordIndex++;
+                    wordIds.Add(wordIndex);
+                }
+            }
+
+            // print wordIds with its respective token
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                Console.WriteLine($"{tokens[i]} {wordIds[i]}");
+            }
+
+
+            return new Encoded
+            {
+                Ids = Array.ConvertAll(ids, int.Parse),
+                Mask = Array.ConvertAll(mask, int.Parse),
+                Tokens = tokens
+            };
         }
 
         public static string PtrToString(IntPtr intPtr)

@@ -63,8 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataEncoding.cs" />
+    <Compile Include="Encoded.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RustStringArray.cs" />
     <Compile Include="Tokenizer.cs" />
     <Compile Include="TokenizerNative.cs" />
   </ItemGroup>

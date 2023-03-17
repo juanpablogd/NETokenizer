@@ -149,6 +149,7 @@ use core::slice;
 use libc::c_char;
 use std::ffi::CString;
 use std::{ffi::CStr, path::Path};
+use tokenizer::{Encoding, Tokenizer};
 
 // Re-export also parallelism utils
 pub use utils::parallelism;
@@ -236,6 +237,8 @@ pub struct CSharpArray {
 pub extern "C" fn encode(
     tokenizerptr: *mut Tokenizer,
     text_pointer: *const c_char,
+    include_special_tokens: bool,
+    pad_to_max: i32,
 ) -> *mut CSharpArray {
     let text: String = unsafe {
         assert!(!text_pointer.is_null());
@@ -249,21 +252,42 @@ pub extern "C" fn encode(
 
     //Clone the pointer
     let new_tokenizer: *mut Tokenizer = tokenizerptr.clone();
-    let tokenizer: &Tokenizer = unsafe { &*new_tokenizer };
+    let tokenizer: &mut Tokenizer = unsafe { &mut *new_tokenizer };
 
-    let encoding: Encoding = tokenizer.encode(text, false).unwrap();
+    let vocab = tokenizer.get_vocab(false);
+
+    // gets pad token id from vocab map
+    let pad_token_id = vocab.get("[PAD]").unwrap();
+
+    // gets the mask token id from vocab map
+    let mask_token_id = vocab.get("[MASK]").unwrap();
+
+    let encoding: Encoding = tokenizer.encode(text, include_special_tokens).unwrap();
 
     let vec_tokens: Vec<String> = encoding.get_tokens().to_vec();
-    let vec_ids: Vec<u32> = encoding.get_ids().to_vec();
-    let mask: Vec<u32> = encoding.get_attention_mask().to_vec();
+    let mut vec_tokens_ids: Vec<u32> = encoding.get_ids().to_vec();
+    let mut vec_mask: Vec<u32> = encoding.get_attention_mask().to_vec();
+    
+    // check if max lenght is greater than 0 and greater than vec_ids lenght
+    if pad_to_max > 0 && pad_to_max as usize > vec_tokens_ids.len() {
+        // pad vec_ids with pad_token_id to max lenght
+        for _ in 0..pad_to_max - vec_tokens_ids.len() as i32 {
+            vec_tokens_ids.push(*pad_token_id);
+        }
 
+        // pad vec_mask with mask_token_id to max lenght
+        for _ in 0..pad_to_max - vec_mask.len() as i32 {
+            vec_mask.push(*mask_token_id);
+        }
+    }
+    
     // join vec_tokens into single string split by space character
     let joined_tokens = vec_tokens.join(" ");
     let cstring_tokens = CString::new(joined_tokens).unwrap();
     let tokens_raw = cstring_tokens.into_raw();
 
     // joint vec_ids into single string split by space character
-    let joined_ids = vec_ids
+    let joined_ids = vec_tokens_ids
         .iter()
         .map(|i| i.to_string())
         .collect::<Vec<String>>()
@@ -272,7 +296,7 @@ pub extern "C" fn encode(
     let ids_raw = cstring_ids.into_raw();
 
     // joint mask into single string split by space character
-    let joined_mask = mask
+    let joined_mask = vec_mask
         .iter()
         .map(|i| i.to_string())
         .collect::<Vec<String>>()
@@ -280,13 +304,13 @@ pub extern "C" fn encode(
     let cstring_mask = CString::new(joined_mask).unwrap();
     let mask_raw = cstring_mask.into_raw();
 
+    // create CSharpArray struct
     let csharp_array = CSharpArray {
         tokens: tokens_raw,
         ids: ids_raw,
-        mask: mask_raw,
+        mask: mask_raw
     };
 
     let box_result = Box::new(csharp_array);
     return Box::into_raw(box_result);
-    //return csharp_array as pointer
 }
