@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace NeTokenizer
 {
@@ -17,9 +16,35 @@ namespace NeTokenizer
         /// </summary>
         private IntPtr _tokenizerPtr;
 
-        public Tokenizer(string tokenizer_path)
+        private Tokenizer(IntPtr nativeptr) => _tokenizerPtr = nativeptr;
+
+        /// <summary>
+        /// Creates a tokenizer from a Huggingface's repository.
+        /// </summary>
+        /// <param name="repository">Huggingface's repository name.</param>
+        /// <returns>New tokenizer.</returns>
+        /// <exception cref="ArgumentNullException">repository cannot be null or empty.</exception>
+        public static Tokenizer FromRepository(string repository)
         {
-            _tokenizerPtr = TokenizerNative.create_tokenizer(tokenizer_path);
+            // throw repository cannot be null or empty
+            if (string.IsNullOrEmpty(repository))
+                throw new ArgumentNullException(nameof(repository));
+            var nativePtr = TokenizerNative.create_tokenizer(repository);
+            return new Tokenizer(nativePtr);
+        }
+
+        /// <summary>
+        /// Creates a tokenizer from a file.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns>Instance of the new tokenizer created from a file.</returns>
+        public static Tokenizer FromFile(string filename)
+        {
+            // throw filename cannot be null or empty
+            if (string.IsNullOrEmpty(filename))
+                throw new ArgumentNullException(nameof(filename));
+            var nativePtr = TokenizerNative.create_tokenizer_local(filename);
+            return new Tokenizer(nativePtr);
         }
 
         /// <summary>
@@ -33,52 +58,37 @@ namespace NeTokenizer
 
         public Encoded Encode(string text,bool includeSpecialTokens = false, int padToMax = -1)
         {
-            var wordIds = new List<int>();
             var nativeStructPtr = TokenizerNative.encode(_tokenizerPtr, text, includeSpecialTokens, padToMax);
             CSharpArray rustArray = Marshal.PtrToStructure<CSharpArray>(nativeStructPtr);
 
             var tokens = PtrToString(rustArray.tokens).Split(' ');
             var ids = PtrToString(rustArray.ids).Split(' ');
             var mask = PtrToString(rustArray.mask).Split(' ');
-
-            int wordIndex = -1;
-
-            // loop tokens with for loop and check if it starts with ##, if it does, then it is a subword
-            for (int i = 0; i < tokens.Length; i++)
-            {
-                if (tokens[i].StartsWith("##"))
-                {
-                    // add subword to the previous word
-                    wordIds.Add(wordIndex);
-                }
-                else if (tokens[i].StartsWith("[") && tokens[i].EndsWith("]"))
-                {
-                    // -100 as None
-                    wordIds.Add(-100);
-                }
-                else
-                {
-                    wordIndex++;
-                    wordIds.Add(wordIndex);
-                }
-            }
-
-            // print wordIds with its respective token
-            for (int i = 0; i < tokens.Length; i++)
-            {
-                Console.WriteLine($"{tokens[i]} {wordIds[i]}");
-            }
-
+            var wordIdsStr = PtrToString(rustArray.wordids).Split(' ');
 
             return new Encoded
             {
-                Ids = Array.ConvertAll(ids, int.Parse),
+                Ids = Array.ConvertAll(ids, long.Parse),
                 Mask = Array.ConvertAll(mask, int.Parse),
-                Tokens = tokens
+                Tokens = tokens,
+                WordIds = Array.ConvertAll(wordIdsStr, int.Parse)
             };
         }
 
-        public static string PtrToString(IntPtr intPtr)
+
+        public string Decode(long[] tokens)
+        {
+            var decodePtr = TokenizerNative.decode(tokens.Length, tokens, _tokenizerPtr);
+            var resultDecoded = PtrToString(decodePtr);
+            return resultDecoded;
+        }
+
+        /// <summary>
+        /// Converts a native pointer to a string. 
+        /// </summary>
+        /// <param name="intPtr">Native pointer.</param>
+        /// <returns>String of the content from the native pointer.</returns>
+        internal static string PtrToString(IntPtr intPtr)
         {
             try
             {

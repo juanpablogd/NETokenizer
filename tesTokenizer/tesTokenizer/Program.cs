@@ -62,12 +62,14 @@ namespace tesTokenizer
         static void Main(string[] args)
         {
             // create tokenizer
-            var tokenizer = new Tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
+            var tokenizer = Tokenizer.FromFile(@"../../../../../bert-base-spanish-wwm-cased/tokenizer.json");
             
             // measure time taken by encode
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            var encodeStruct = tokenizer.Encode("programo utilizando ia.", includeSpecialTokens: true, padToMax: 15);
+            var encodeStruct = tokenizer.Encode("La inteligencia artificial (IA), en el contexto de las ciencias de la computación, es el conjunto de sistemas o combinación de algoritmos, cuyo propósito es crear máquinas que imitan la inteligencia humana para realizar tareas y pueden mejorar conforme la información que recopilan.", includeSpecialTokens: true, padToMax: 60);
+
+            var decoded = tokenizer.Decode(encodeStruct.Ids);
 
             watch.Stop();
 

@@ -193,20 +193,6 @@ pub extern "C" fn create_tokenizer_local(tokenizer_path: *const c_char) -> *mut 
 }
 
 #[no_mangle]
-pub extern "C" fn print_string(text_pointer: *mut c_char) -> *mut c_char {
-    unsafe {
-        let text: String = CStr::from_ptr(text_pointer)
-            .to_str()
-            .expect("Can not read string argument.")
-            .trim()
-            .to_string();
-        println!("{}", text);
-        let ss: *mut c_char = text.as_ptr() as *mut c_char;
-        return ss;
-    }
-}
-
-#[no_mangle]
 pub extern "C" fn decode(len: usize, ids: *const i64, tokenizerptr: *mut Tokenizer) -> *mut c_char {
     let longs = unsafe {
         assert!(!ids.is_null());
@@ -231,6 +217,7 @@ pub struct CSharpArray {
     tokens: *mut c_char,
     ids: *mut c_char,
     mask: *mut c_char,
+    wordids: *mut c_char,
 }
 
 #[no_mangle]
@@ -267,7 +254,24 @@ pub extern "C" fn encode(
     let vec_tokens: Vec<String> = encoding.get_tokens().to_vec();
     let mut vec_tokens_ids: Vec<u32> = encoding.get_ids().to_vec();
     let mut vec_mask: Vec<u32> = encoding.get_attention_mask().to_vec();
-    
+
+    // eval word ids
+    let mut word_index = -1;
+    let mut word_ids: Vec<i32> = Vec::new();
+
+    for token in &vec_tokens {
+        if token.starts_with("##") {
+            // add subword to the previous word
+            word_ids.push(word_index);
+        } else if token.starts_with("[") && token.ends_with("]") {
+            // -100 as None
+            word_ids.push(-100);
+        } else {
+            word_index += 1;
+            word_ids.push(word_index);
+        }
+    }
+
     // check if max lenght is greater than 0 and greater than vec_ids lenght
     if pad_to_max > 0 && pad_to_max as usize > vec_tokens_ids.len() {
         // pad vec_ids with pad_token_id to max lenght
@@ -280,11 +284,27 @@ pub extern "C" fn encode(
             vec_mask.push(*mask_token_id);
         }
     }
-    
+
+    // if pad to != -1 then pad word_ids with -100 to max lenght
+    if pad_to_max > 0 && pad_to_max as usize > word_ids.len() {
+        for _ in 0..pad_to_max - word_ids.len() as i32 {
+            word_ids.push(-100);
+        }
+    }
+
     // join vec_tokens into single string split by space character
     let joined_tokens = vec_tokens.join(" ");
     let cstring_tokens = CString::new(joined_tokens).unwrap();
     let tokens_raw = cstring_tokens.into_raw();
+
+    // join word_ids into single string split by space character
+    let joined_word_ids = word_ids
+        .iter()
+        .map(|i| i.to_string())
+        .collect::<Vec<String>>()
+        .join(" ");
+    let cstring_word_ids = CString::new(joined_word_ids).unwrap();
+    let word_ids_raw = cstring_word_ids.into_raw();
 
     // joint vec_ids into single string split by space character
     let joined_ids = vec_tokens_ids
@@ -308,7 +328,8 @@ pub extern "C" fn encode(
     let csharp_array = CSharpArray {
         tokens: tokens_raw,
         ids: ids_raw,
-        mask: mask_raw
+        mask: mask_raw,
+        wordids: word_ids_raw,
     };
 
     let box_result = Box::new(csharp_array);
