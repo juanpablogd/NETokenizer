@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using NeTokenizer;
+using System.Security.Cryptography;
 
 namespace Test.NeTokenizer
 {
@@ -9,28 +10,97 @@ namespace Test.NeTokenizer
     {
         private string _testText = "Hola, ¿cómo estás?".ToLower();
 
-        [TestMethod]
-        public void EncodeDecodeEmptyText()
+        private Tokenizer GetTokenizer(bool fromFile)
         {
-            var tokenizer = Tokenizer.FromFile("tokenizer.json");
+            if (fromFile)
+            {
+                return Tokenizer.FromFile("tokenizer.json");
+            }
+            else
+            {
+                return Tokenizer.FromRepository("dccuchile/bert-base-spanish-wwm-cased");
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(true, 1000)]
+        [DataRow(false, 1000)]
+        public void EncodeDecode1k(bool fromFile, int iterations)
+        {
+            Tokenizer tokenizer = GetTokenizer(fromFile);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var tokens = tokenizer.Encode(_testText);
+                var decoded = tokenizer.Decode(tokens.Ids);
+                var secondEncode = tokenizer.Encode(decoded);
+                var secondDecode = tokenizer.Decode(secondEncode.Ids);
+                Assert.AreEqual(secondDecode, decoded);
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(true, 1000)]
+        [DataRow(false, 1000)]
+        public void EncodeDecode1kPad(bool fromFile, int iterations)
+        {
+            Tokenizer tokenizer = GetTokenizer(fromFile);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var tokens = tokenizer.Encode(_testText, padToMax:512);
+                var decoded = tokenizer.Decode(tokens.Ids);
+                var secondEncode = tokenizer.Encode(decoded);
+                var secondDecode = tokenizer.Decode(secondEncode.Ids);
+                Assert.AreEqual(decoded, secondDecode);
+                Assert.AreEqual(tokens.Ids.Length, 512);
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void CheckTokenizerArgumentNull(bool fromFile)
+        {
+            if (fromFile)
+            {
+                Assert.ThrowsException<ArgumentNullException>(() => Tokenizer.FromFile(null));
+            }
+            else
+            {
+                Assert.ThrowsException<ArgumentNullException>(() => Tokenizer.FromRepository(null));
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void EncodeDecodeEmptyText(bool fromFile)
+        {
+            Tokenizer tokenizer = GetTokenizer(fromFile);
+
             var tokens = tokenizer.Encode("");
             var decoded = tokenizer.Decode(tokens.Ids);
             Assert.AreEqual(string.Empty, decoded);
         }
 
-        [TestMethod]
-        public void CreateTokenizerFromFile()
+        [DataTestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void CreateTokenizer(bool fromFile)
         {
-            var tokenizer = Tokenizer.FromFile("tokenizer.json");
+            Tokenizer tokenizer = GetTokenizer(fromFile);
 
             // check if native pointer is not zero
             Assert.AreNotEqual(tokenizer.GetNativePtr(), IntPtr.Zero);
         }
 
-        [TestMethod]
-        public void CreateTokenizerFromFileEncodeDecode()
+        [DataTestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void CreateTokenizerEncodeDecode(bool fromFile)
         {
-            var tokenizer = Tokenizer.FromFile("tokenizer.json");
+            Tokenizer tokenizer = GetTokenizer(fromFile);
 
             var tokens = tokenizer.Encode(_testText);
             var decoded = tokenizer.Decode(tokens.Ids);
@@ -41,5 +111,22 @@ namespace Test.NeTokenizer
 
             Assert.AreEqual(decoded, secondDecode);
         }
+
+        [DataTestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void PadTo(bool fromFile)
+        {
+            Tokenizer tokenizer = GetTokenizer(fromFile);
+
+            // encode with 512 padding
+            var tokens = tokenizer.Encode(_testText, padToMax: 512);
+
+
+            Assert.AreEqual(512, tokens.Ids.Length);
+            Assert.AreEqual(512, tokens.WordIds.Length);
+            Assert.AreEqual(512, tokens.Mask.Length);
+        }
+
     }
 }
