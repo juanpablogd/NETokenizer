@@ -5,6 +5,10 @@ VisualStudioVersion = 17.5.33312.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tesTokenizer", "tesTokenizer\tesTokenizer.csproj", "{53D62E2A-6024-42B7-93C2-5574E2939083}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeTokenizer", "NeTokenizer\NeTokenizer.csproj", "{DB2E6F4D-E0E2-4A37-979D-CA81308D8DD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.NeTokenizer", "Test.NeTokenizer\Test.NeTokenizer.csproj", "{687A8434-6955-4F1B-9DFE-672C8B0A0DCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,22 @@ Global
 		{53D62E2A-6024-42B7-93C2-5574E2939083}.Release|Any CPU.Build.0 = Release|Any CPU
 		{53D62E2A-6024-42B7-93C2-5574E2939083}.Release|x64.ActiveCfg = Release|x64
 		{53D62E2A-6024-42B7-93C2-5574E2939083}.Release|x64.Build.0 = Release|x64
+		{DB2E6F4D-E0E2-4A37-979D-CA81308D8DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB2E6F4D-E0E2-4A37-979D-CA81308D8DD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB2E6F4D-E0E2-4A37-979D-CA81308D8DD5}.Debug|x64.ActiveCfg = Debug|x64
+		{DB2E6F4D-E0E2-4A37-979D-CA81308D8DD5}.Debug|x64.Build.0 = Debug|x64
+		{DB2E6F4D-E0E2-4A37-979D-CA81308D8DD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB2E6F4D-E0E2-4A37-979D-CA81308D8DD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB2E6F4D-E0E2-4A37-979D-CA81308D8DD5}.Release|x64.ActiveCfg = Release|Any CPU
+		{DB2E6F4D-E0E2-4A37-979D-CA81308D8DD5}.Release|x64.Build.0 = Release|Any CPU
+		{687A8434-6955-4F1B-9DFE-672C8B0A0DCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{687A8434-6955-4F1B-9DFE-672C8B0A0DCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{687A8434-6955-4F1B-9DFE-672C8B0A0DCD}.Debug|x64.ActiveCfg = Debug|x64
+		{687A8434-6955-4F1B-9DFE-672C8B0A0DCD}.Debug|x64.Build.0 = Debug|x64
+		{687A8434-6955-4F1B-9DFE-672C8B0A0DCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{687A8434-6955-4F1B-9DFE-672C8B0A0DCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{687A8434-6955-4F1B-9DFE-672C8B0A0DCD}.Release|x64.ActiveCfg = Release|Any CPU
+		{687A8434-6955-4F1B-9DFE-672C8B0A0DCD}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
