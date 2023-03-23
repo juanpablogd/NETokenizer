@@ -14,7 +14,7 @@ namespace NeTokenizer
 
     internal class TokenizerNative
     {
-        const string path_dll = @"../../../../../ext/tokenizers/target/release/tokenizers.dll";
+        const string path_dll = @"tokenizers.dll";
         [DllImport(path_dll)]
         public static extern IntPtr create_tokenizer(string tokenizer_path);
 

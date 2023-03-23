@@ -7,10 +7,21 @@ namespace Test.NeTokenizer
     [TestClass]
     public class NeTokenizerTests
     {
+        private string _testText = "Hola, ¿cómo estás?".ToLower();
+
+        [TestMethod]
+        public void EncodeDecodeEmptyText()
+        {
+            var tokenizer = Tokenizer.FromFile("tokenizer.json");
+            var tokens = tokenizer.Encode("");
+            var decoded = tokenizer.Decode(tokens.Ids);
+            Assert.AreEqual(string.Empty, decoded);
+        }
+
         [TestMethod]
         public void CreateTokenizerFromFile()
         {
-            var tokenizer = Tokenizer.FromRepository("../../../../../bert-base-spanish-wwm-cased/tokenizer.json");
+            var tokenizer = Tokenizer.FromFile("tokenizer.json");
 
             // check if native pointer is not zero
             Assert.AreNotEqual(tokenizer.GetNativePtr(), IntPtr.Zero);
@@ -19,10 +30,9 @@ namespace Test.NeTokenizer
         [TestMethod]
         public void CreateTokenizerFromFileEncodeDecode()
         {
-            var tokenizer = Tokenizer.FromRepository("../../../../../bert-base-spanish-wwm-cased/tokenizer.json");
+            var tokenizer = Tokenizer.FromFile("tokenizer.json");
 
-            string text = "Hola, ¿cómo estás?".ToLower();
-            var tokens = tokenizer.Encode(text);
+            var tokens = tokenizer.Encode(_testText);
             var decoded = tokenizer.Decode(tokens.Ids);
 
             // encode again and check if the result is the same as the original text

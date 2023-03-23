@@ -235,8 +235,6 @@ pub extern "C" fn encode(
             .trim()
             .to_string()
     };
-    println!("text: {}", text);
-
     //Clone the pointer
     let new_tokenizer: *mut Tokenizer = tokenizerptr.clone();
     let tokenizer: &mut Tokenizer = unsafe { &mut *new_tokenizer };

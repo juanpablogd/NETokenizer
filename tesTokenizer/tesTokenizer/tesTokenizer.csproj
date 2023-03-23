@@ -62,6 +62,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\bert-base-spanish-wwm-cased\tokenizer.json">
+      <Link>tokenizer.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -70,6 +74,12 @@
       <Project>{db2e6f4d-e0e2-4a37-979d-ca81308d8dd5}</Project>
       <Name>NeTokenizer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\ext\tokenizers\target\debug\tokenizers.dll">
+      <Link>tokenizers.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

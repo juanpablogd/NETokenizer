@@ -56,8 +56,9 @@ namespace NeTokenizer
             return _tokenizerPtr;
         }
 
-        public Encoded Encode(string text,bool includeSpecialTokens = false, int padToMax = -1)
+        public Encoded Encode(string text, bool includeSpecialTokens = false, int padToMax = -1)
         {
+            if (string.IsNullOrWhiteSpace(text)) return new Encoded();
             var nativeStructPtr = TokenizerNative.encode(_tokenizerPtr, text, includeSpecialTokens, padToMax);
             CSharpArray rustArray = Marshal.PtrToStructure<CSharpArray>(nativeStructPtr);
 
@@ -66,6 +67,7 @@ namespace NeTokenizer
             var mask = PtrToString(rustArray.mask).Split(' ');
             var wordIdsStr = PtrToString(rustArray.wordids).Split(' ');
 
+            // check if every property contains elements
             return new Encoded
             {
                 Ids = Array.ConvertAll(ids, long.Parse),
@@ -78,6 +80,11 @@ namespace NeTokenizer
 
         public string Decode(long[] tokens)
         {
+            if (tokens == null || tokens.Length == 0)
+            {
+                return string.Empty;
+            }
+
             var decodePtr = TokenizerNative.decode(tokens.Length, tokens, _tokenizerPtr);
             var resultDecoded = PtrToString(decodePtr);
             return resultDecoded;
