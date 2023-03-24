@@ -56,8 +56,16 @@ namespace NeTokenizer
             return _tokenizerPtr;
         }
 
-        public Encoded Encode(string text,bool includeSpecialTokens = false, int padToMax = -1)
+        /// <summary>
+        /// Encodes the specified text using the current tokenizer.
+        /// </summary>
+        /// <param name="text">The text to encode.</param>
+        /// <param name="includeSpecialTokens">Whether to include special tokens in the encoding. Default is false.</param>
+        /// <param name="padToMax">If greater than 0, the encoding is padded to this length. If less than the length of the encoded sequence, the sequence is truncated. Default is -1 (no padding).</param>
+        /// <returns>An <see cref="Encoded"/> object representing the encoded sequence.</returns>
+        public Encoded Encode(string text, bool includeSpecialTokens = false, int padToMax = -1)
         {
+            if (string.IsNullOrWhiteSpace(text)) return new Encoded();
             var nativeStructPtr = TokenizerNative.encode(_tokenizerPtr, text, includeSpecialTokens, padToMax);
             CSharpArray rustArray = Marshal.PtrToStructure<CSharpArray>(nativeStructPtr);
 
@@ -76,8 +84,18 @@ namespace NeTokenizer
         }
 
 
+        /// <summary>
+        /// Decodes the specified tokens using the current tokenizer.
+        /// </summary>
+        /// <param name="tokens">The tokens to decode.</param>
+        /// <returns>A string representing the decoded text.</returns>
         public string Decode(long[] tokens)
         {
+            if (tokens == null || tokens.Length == 0)
+            {
+                return string.Empty;
+            }
+
             var decodePtr = TokenizerNative.decode(tokens.Length, tokens, _tokenizerPtr);
             var resultDecoded = PtrToString(decodePtr);
             return resultDecoded;
@@ -90,20 +108,12 @@ namespace NeTokenizer
         /// <returns>String of the content from the native pointer.</returns>
         internal static string PtrToString(IntPtr intPtr)
         {
-            try
-            {
-                int len = 0;
-                while (Marshal.ReadByte(intPtr, len) != 0) ++len;
-                byte[] buffer = new byte[len];
-                Marshal.Copy(intPtr, buffer, 0, buffer.Length);
-                string result = Encoding.UTF8.GetString(buffer);
-                return result;
-            }
-            catch (AccessViolationException ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            return string.Empty;
+            int len = 0;
+            while (Marshal.ReadByte(intPtr, len) != 0) ++len;
+            byte[] buffer = new byte[len];
+            Marshal.Copy(intPtr, buffer, 0, buffer.Length);
+            string result = Encoding.UTF8.GetString(buffer);
+            return result;
         }
     }
 }

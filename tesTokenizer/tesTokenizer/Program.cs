@@ -62,28 +62,38 @@ namespace tesTokenizer
         static void Main(string[] args)
         {
             // create tokenizer
-            var tokenizer = Tokenizer.FromFile(@"../../../../../bert-base-spanish-wwm-cased/tokenizer.json");
+            var tokenizer = Tokenizer.FromFile(@"tokenizer.json");
             
             // measure time taken by encode
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            var encodeStruct = tokenizer.Encode("La inteligencia artificial (IA), en el contexto de las ciencias de la computación, es el conjunto de sistemas o combinación de algoritmos, cuyo propósito es crear máquinas que imitan la inteligencia humana para realizar tareas y pueden mejorar conforme la información que recopilan.", includeSpecialTokens: true, padToMax: 60);
+            const string inputText= "La inteligencia artificial (IA), en el contexto de las ciencias de la computación, es el conjunto de sistemas o combinación de algoritmos, cuyo propósito es crear máquinas que imitan la inteligencia humana para realizar tareas y pueden mejorar conforme la información que recopilan.";
+            var encodeStruct = tokenizer.Encode(inputText, includeSpecialTokens: true, padToMax: 60);
 
             var decoded = tokenizer.Decode(encodeStruct.Ids);
 
             watch.Stop();
 
+            // print input text using yellow color
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Input text: {inputText} -----");
+
+            // print encoded ids using green color
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Encoded ids: {string.Join(" ", encodeStruct.Ids)} -----");
+
+            
+            // print encoded tokens using yellow color
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Encoded tokens: {string.Join(" ", encodeStruct.Tokens)} -----");
+
+
+            // print decoded text using cyan
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine($"Decoded text: {decoded} -----");
+
             // print elapsed time
-            Console.WriteLine($"Ellapsed ms: {watch.ElapsedMilliseconds}");
-
-            //var tokenizerPtr = create_tokenizer(@"dccuchile/bert-base-spanish-wwm-cased");
-            // var tokenizerPtr = create_tokenizer_local(@"pre_trained\bert-base-spanish-wwm-cased\tokenizer.json");
-
-
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    test_encoder_v5(tokenizerPtr, "Carlos Fonseca");
-            //}
+            Console.WriteLine($"Elapsed time: {watch.ElapsedMilliseconds} ms -----");
 
             Console.ReadLine();
         }
